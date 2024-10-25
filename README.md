@@ -1,2 +1,2 @@
 # AzureOpsCLI
-Azure CLI for Operational Tasks
+Azure CLI for operational tasks
