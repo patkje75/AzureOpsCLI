@@ -25,29 +25,31 @@ public class VMListAllCommand : AsyncCommand
                 grid.AddColumn(new GridColumn().Width(35));
                 grid.AddColumn(new GridColumn().Width(30));
                 grid.AddColumn(new GridColumn().Width(30)); 
-                grid.AddColumn(new GridColumn().Width(10));
+                grid.AddColumn(new GridColumn().Width(20));
                 grid.AddColumn(new GridColumn().Width(30));
+                grid.AddColumn(new GridColumn().Width(20));
+                grid.AddColumn(new GridColumn().Width(17));
 
                 grid.AddRow(
                     "[bold darkgreen]VM Name[/]",
                     "[bold darkgreen]Location[/]",
                     "[bold darkgreen]Subscription[/]",
                     "[bold darkgreen]Status[/]",
-                    "[bold darkgreen]Image Name[/]"
-                );
+                    "[bold darkgreen]Image Name[/]",
+                    "[bold darkgreen]Version[/]",
+                    "[bold darkgreen]Marketplace Image[/]"
+                     );
 
                 foreach (var vm in vms)
                 {
 
                     string status = vm.Status?.ToString() ?? "unknown";
-
-                    var statusColor = status.Equals("running", StringComparison.OrdinalIgnoreCase) ? "green" : "red";
-
                     var imageReference = vm.VM.Data.StorageProfile?.ImageReference;
                     string imageReferenceId = imageReference?.Id;
-                    string imageName = "Not a compute gallery image";
+                    string imageName = "No image name found";
+                    string imageVersion = "No version specified";
+                    bool marketplace = false;
 
-                    Console.WriteLine(imageReferenceId);
 
                     if (!string.IsNullOrEmpty(imageReferenceId))
                     {
@@ -55,16 +57,28 @@ public class VMListAllCommand : AsyncCommand
                         if (parts.Length >= 10)
                         {
                             imageName = parts[10];
+                            imageVersion = imageReference.ExactVersion;
                         }
+
                     }
+                    else
+                    {
+                        imageName = imageReference.Sku;
+                        imageVersion = imageReference.Version;
+                        marketplace = true;
+                    }
+
+                    var marketplaceColor = marketplace != true ? "red" : "green";
+                    var statusColor = status.Equals("running", StringComparison.OrdinalIgnoreCase) ? "green" : "red";
 
                     grid.AddRow(
                         $"[blue]{vm.VM.Data.Name}[/]", 
                         $"[yellow]{vm.VM.Data.Location}[/]",
                         $"[yellow]{vm.SubscriptionName}[/]", 
                         $"[{statusColor}]{status}[/]", 
-                        $"[yellow]{imageName}[/]"
-
+                        $"[yellow]{imageName}[/]",
+                        $"[yellow]{imageVersion}[/]",
+                        $"[{marketplaceColor}]{marketplace}[/]"
                     );
                 }
 

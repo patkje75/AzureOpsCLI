@@ -30,7 +30,10 @@ namespace AzureOpsCLI.Commands.Info
             aci.AddNode("[green]stop[/]  [lightseagreen]all | subscription[/]");
 
             var imageGallery = root.AddNode("[blue]imagegallery[/]");
-            imageGallery.AddNode("[green]images[/] [lightseagreen]all | subscription[/]");
+            imageGallery.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
+
+            var imageGalleryImages = imageGallery.AddNode("[blue]images[/]");
+            imageGalleryImages.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
 
             var vm = root.AddNode("[blue]vm[/] [lightseagreen]all | subscription[/]");
             vm.AddNode("[green]delete[/] [lightseagreen]all | subscription[/]");

@@ -42,6 +42,7 @@ namespace AzureOpsCLI.Commands.vmss
                     grid.AddColumn(new GridColumn().Width(20));
                     grid.AddColumn(new GridColumn().Width(30));
                     grid.AddColumn(new GridColumn().Width(25));
+                    grid.AddColumn(new GridColumn().Width(17));
 
                     grid.AddRow(
                         "[bold darkgreen]Name[/]",
@@ -50,14 +51,17 @@ namespace AzureOpsCLI.Commands.vmss
                         "[bold darkgreen]Status[/]",
                         "[bold darkgreen]Instances[/]",
                         "[bold darkgreen]Image Name[/]",
-                        "[bold darkgreen]Image Version[/]");
+                        "[bold darkgreen]Version[/]",
+                        "[bold darkgreen]Marketplace Image[/]"
+                        );
 
                     foreach (var vmss in vmscalesets)
                     {
                         var imageReference = vmss.VMSS.Data.VirtualMachineProfile?.StorageProfile?.ImageReference;
                         string imageReferenceId = imageReference?.Id;
-                        string imageName = "Not a compute gallery image";
+                        string imageName = "No image name found";
                         string imageVersion = "No version specified";
+                        bool marketplace = false;
 
                         if (!string.IsNullOrEmpty(imageReferenceId))
                         {
@@ -70,11 +74,18 @@ namespace AzureOpsCLI.Commands.vmss
                             else
                             {
                                 imageName = parts[10];
-                                imageVersion = imageVersion;
                             }
+
+                        }
+                        else
+                        {
+                            imageName = imageReference.Offer;
+                            imageVersion = imageReference.Version;
+                            marketplace = true;
                         }
 
                         var statusColor = vmss.Status != "running" ? "red" : "green";
+                        var marketplaceColor = marketplace != true ? "red" : "green";
 
                         grid.AddRow(
                             $"[blue]{vmss.VMSS.Data.Name}[/]",
@@ -83,7 +94,8 @@ namespace AzureOpsCLI.Commands.vmss
                             $"[{statusColor}]{vmss.Status}[/]",
                             $"[yellow]{vmss.numberOfInstances}[/]",
                             $"[yellow]{imageName}[/]",
-                            $"[yellow]{imageVersion}[/]"
+                            $"[yellow]{imageVersion}[/]",
+                            $"[{marketplaceColor}]{marketplace}[/]"
                         );
                     }
 
