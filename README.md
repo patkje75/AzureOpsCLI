@@ -1,11 +1,12 @@
 # `Azure Ops CLI - azo`
 
 A graphical Azure CLI inspired by `Spectre.Console`.  
-Instead of repeatedly asking questions with Azure CLI or creating scripts, you can retrieve information and perform bulk actions directly in the CLI with a graphical experience.  
+Instead of repeatedly asking questions with Azure CLI or creating scripts, you can retrieve resources and perform bulk actions directly in the CLI with a graphical experience.  
+
 For example, updating one or more Virtual Machine Scale Sets with a new image, starting, stopping, or restarting one or more Virtual Machines or Container Instances by selecting them in a list.  
 
 This is a hobby project and is maintained to the best of my ability, I am not a software developer.  
-The ambition with this is to code for fun, but also to create something useful. :computer:  
+The ambition with this project is to code for fun, but also to create something useful. :computer:  
 More functionality and improvements will be added over time.  
 
 At this point, this tool may not be the best option if you have a large number of subscriptions or resources, as the lists can become very long.  
