@@ -86,8 +86,9 @@ namespace AzureOpsCLI.Commands.vm
 
                                     if (settings.ConsoleOutput)
                                     {
-                                        AnsiConsole.MarkupLine($"[green]Logs from container {aciExtended.ContainerGroup.Data.Name}:[/]");
+                                        AnsiConsole.MarkupLine($"[green]Logs from container {aciExtended.ContainerGroup.Data.Name}:[/]");;
                                         AnsiConsole.WriteLine(logMessage);
+
                                     }
                                     else if (!string.IsNullOrEmpty(settings.FilePath))
                                     {

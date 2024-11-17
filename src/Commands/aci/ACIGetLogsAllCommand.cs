@@ -78,8 +78,7 @@ namespace AzureOpsCLI.Commands.aci
                                         var filePath = Path.Combine(settings.FilePath, $"{aciExtended.ContainerGroup.Data.Name}_logs.txt");
                                         File.WriteAllText(filePath, logMessage);
                                         AnsiConsole.MarkupLine($"[green]Logs written to file:[/] {filePath}");
-                                    }
-
+                                    }                                    
                                     task.Description = $"Fetching logs was [green]successful[/] for {aciExtended.ContainerGroup.Data.Name}";
                                     task.Increment(100);
                                 }

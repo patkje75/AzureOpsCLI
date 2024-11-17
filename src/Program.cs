@@ -1,6 +1,7 @@
 ﻿using AzureOpsCLI.Commands.aci;
 using AzureOpsCLI.Commands.imagegallery;
 using AzureOpsCLI.Commands.Info;
+using AzureOpsCLI.Commands.mg;
 using AzureOpsCLI.Commands.vm;
 using AzureOpsCLI.Commands.vmss;
 using AzureOpsCLI.Commands.vmss.instance;
@@ -21,6 +22,7 @@ class Program
         services.AddSingleton<ISubscritionService, SubscriptionService>();
         services.AddSingleton<IACIService, ACIService>();
         services.AddSingleton<IImageGalleryService, ImageGalleryService>();
+        services.AddSingleton<IMGService, MGService>();
         var registrar = new TypeRegistrar(services);
         var app = new CommandApp(registrar);
 
@@ -339,6 +341,14 @@ class Program
 
                     });
                 });
+            });
+
+            config.AddBranch("mg", mg =>
+            {
+                //Description
+                mg.SetDescription("Management Group commands");
+                mg.AddCommand<MGShowCommand>("show")
+                    .WithDescription("Draws the Management Group hierarchy.");
             });
 
             ///Command
