@@ -66,6 +66,7 @@ namespace AzureOpsCLI.Commands.Info
 
             var apim = root.AddNode("[blue]apim[/]");
             apim.AddNode("[green]list[/]  [lightseagreen]all | subscription[/]");
+            apim.AddNode("[green]backup[/]  [lightseagreen]all | subscription[/]");
 
             AnsiConsole.Write(root);
 
