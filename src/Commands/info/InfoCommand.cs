@@ -64,6 +64,9 @@ namespace AzureOpsCLI.Commands.Info
             var mg = root.AddNode("[blue]mg[/]");
             mg.AddNode("[green]show[/] ([purple4]--console / --exportmermaid[/])");
 
+            var apim = root.AddNode("[blue]apim[/]");
+            apim.AddNode("[green]list[/]  [lightseagreen]all | subscription[/]");
+
             AnsiConsole.Write(root);
 
             return 0;

@@ -1,4 +1,5 @@
 ﻿using AzureOpsCLI.Commands.aci;
+using AzureOpsCLI.Commands.apim;
 using AzureOpsCLI.Commands.imagegallery;
 using AzureOpsCLI.Commands.Info;
 using AzureOpsCLI.Commands.mg;
@@ -9,6 +10,7 @@ using AzureOpsCLI.DependencyInjection;
 using AzureOpsCLI.Interfaces;
 using AzureOpsCLI.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 class Program
@@ -23,6 +25,8 @@ class Program
         services.AddSingleton<IACIService, ACIService>();
         services.AddSingleton<IImageGalleryService, ImageGalleryService>();
         services.AddSingleton<IMGService, MGService>();
+        services.AddSingleton<IAPIManagementService, APIManagementService>();
+        services.AddSingleton<IStorageService, StorageService>();
         var registrar = new TypeRegistrar(services);
         var app = new CommandApp(registrar);
 
@@ -348,7 +352,43 @@ class Program
                 //Description
                 mg.SetDescription("Management Group commands");
                 mg.AddCommand<MGShowCommand>("show")
-                    .WithDescription("Draws the Management Group hierarchy.");
+                    .WithDescription("Shows the Management Group hierarchy.");
+            });
+
+            config.AddBranch("apim", apim =>
+            {
+                //Description
+                apim.SetDescription("API Mangagenment Service commands");
+                apim.AddBranch("list", list =>
+                {
+                    //Description
+                    list.SetDescription("List commands associated with API Management Services");
+                    //Commands
+                    list.AddCommand<APIManagementListCommand>("all")
+                        .WithDescription("Get all API Management Services in all subscriptions.");
+                    list.AddCommand<APIManagementListSubscriptionCommand>("subscription")
+                        .WithDescription("Get all container instances in a specific subscriptions.");
+                });
+                apim.AddBranch("backup", backup =>
+                {
+                    //Description
+                    backup.SetDescription("Backup commands associated with API Management Services");
+                    //Commands
+                    backup.AddCommand<APIMBackupAllCommand>("all")
+                        .WithDescription("Get all API Management Services in all subscriptions and backup the selected one to a storage account.\n\n" +
+                        "[red]NOTE[/]\n" +
+                        "The API Managment resource needs a Managed Identity or a User Assigned identity with at least [yellow]Storage Blob Data Contributor[/] on the target storage account.\n" +
+                        "The logged in user performig the backup must have at least [yellow]'Microsoft.ApiManagement/service/backup/action'[/] on the API Managment resource.\n\n" +
+                        "[blue]INFO[/]\n" +
+                        "A blob container with the name [green]apim-backup[/] will be created under the storage account and the backup file will have the name [green]'<APIM Resource Name> Backup yyyy-MM-dd HH:mm'[/]");
+                    backup.AddCommand<APIMBackupSubscriptionCommand>("subscription")
+                        .WithDescription("Get all API Management Services in a specific subscriptions and backup the selected one to a storage account.\n\n" +
+                        "[red]NOTE[/]\n" +
+                        "The API Managment resource needs a Managed Identity or a User Assigned identity with at least [yellow]Storage Blob Data Contributor[/] on the target storage account.\n" +
+                        "The logged in user performig the backup must have at least [yellow]'Microsoft.ApiManagement/service/backup/action'[/] on the API Managment resource.\n\n" +
+                        "[blue]INFO[/]\n" +
+                        "A blob container with the name [green]apim-backup[/] will be created under the storage account and the backup file will have the name [green]'<APIM Resource Name> Backup yyyy-MM-dd HH:mm'[/]");
+                });
             });
 
             ///Command
@@ -357,9 +397,5 @@ class Program
         });
 
         return await app.RunAsync(args);
-
     }
-
-
-
 }
