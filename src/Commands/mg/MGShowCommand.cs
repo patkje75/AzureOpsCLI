@@ -1,14 +1,8 @@
-﻿using Azure.ResourceManager.ManagementGroups.Models;
-using AzureOpsCLI.Commands.aci;
-using AzureOpsCLI.Interfaces;
+﻿using AzureOpsCLI.Interfaces;
 using AzureOpsCLI.Models;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureOpsCLI.Commands.mg
 {
@@ -75,7 +69,7 @@ namespace AzureOpsCLI.Commands.mg
                 {
                     AnsiConsole.MarkupLine($"[red]Error[/]: {ex.Message}");
                     return -1;
-                }            
+                }
             }
             else if (settings.ConsoleOutput)
             {

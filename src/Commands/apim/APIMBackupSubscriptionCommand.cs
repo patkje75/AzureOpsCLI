@@ -1,15 +1,7 @@
-﻿using Azure.Core;
-using Azure.ResourceManager.Models;
-using AzureOpsCLI.Interfaces;
+﻿using AzureOpsCLI.Interfaces;
 using AzureOpsCLI.Models;
-using AzureOpsCLI.Services;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureOpsCLI.Commands.apim
 {
@@ -45,12 +37,12 @@ namespace AzureOpsCLI.Commands.apim
                 return -1;
             }
 
-           // API Managment
-           var apimSelection = AnsiConsole.Prompt(
-           new SelectionPrompt<string>()
-               .Title("Select an API Management services to back up:")
-               .PageSize(10)
-               .AddChoices(apimServices.Select(apim => $"{apim.APIManagementService.Data.Name} ({apim.APIManagementService.Data.Location})")));
+            // API Managment
+            var apimSelection = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Select an API Management services to back up:")
+                .PageSize(10)
+                .AddChoices(apimServices.Select(apim => $"{apim.APIManagementService.Data.Name} ({apim.APIManagementService.Data.Location})")));
 
             var selectedAPIM = apimServices.First(apim => $"{apim.APIManagementService.Data.Name} ({apim.APIManagementService.Data.Location})" == apimSelection);
 

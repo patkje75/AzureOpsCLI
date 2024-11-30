@@ -1,16 +1,9 @@
 ﻿using Azure.Identity;
 using Azure.ResourceManager;
-using Azure.ResourceManager.ApiManagement;
-using Azure.ResourceManager.Resources;
 using Azure.ResourceManager.Storage;
 using AzureOpsCLI.Interfaces;
 using AzureOpsCLI.Models;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureOpsCLI.Services
 {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AzureOpsCLI.Models
+﻿namespace AzureOpsCLI.Models
 {
     public class ManagedIdentity
     {

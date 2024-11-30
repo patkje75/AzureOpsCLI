@@ -10,7 +10,6 @@ using AzureOpsCLI.DependencyInjection;
 using AzureOpsCLI.Interfaces;
 using AzureOpsCLI.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
 using Spectre.Console.Cli;
 
 class Program

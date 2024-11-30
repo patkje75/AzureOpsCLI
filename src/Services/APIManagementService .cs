@@ -3,19 +3,11 @@ using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.ApiManagement;
 using Azure.ResourceManager.ApiManagement.Models;
-using Azure.ResourceManager.ManagedServiceIdentities;
-using Azure.ResourceManager.Models;
 using Azure.ResourceManager.Resources;
 using Azure.ResourceManager.Storage;
-using Azure.Storage.Blobs.Models;
 using AzureOpsCLI.Interfaces;
 using AzureOpsCLI.Models;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AzureOpsCLI.Services
 {
@@ -45,12 +37,12 @@ namespace AzureOpsCLI.Services
                             await foreach (var apim in apims)
                             {
 
-                                    apiManagementServices.Add(new ApiManagementServiceResourceExtended
-                                    {
-                                        APIManagementService = apim,
-                                        SubscriptionName = subscription.Data.DisplayName
-                                    }
-                                );
+                                apiManagementServices.Add(new ApiManagementServiceResourceExtended
+                                {
+                                    APIManagementService = apim,
+                                    SubscriptionName = subscription.Data.DisplayName
+                                }
+                            );
                             }
                         }
                     });
@@ -72,7 +64,7 @@ namespace AzureOpsCLI.Services
             {
                 await AnsiConsole.Status()
                     .StartAsync($"Fetching all API Managment Services in {subscription.Data.DisplayName}...", async ctx =>
-                    {                        
+                    {
                         var apims = subscription.GetApiManagementServicesAsync();
                         await foreach (var apim in apims)
                         {
@@ -86,7 +78,7 @@ namespace AzureOpsCLI.Services
                             );
                         }
                     });
-           
+
             }
             catch (Exception ex)
             {
@@ -114,7 +106,7 @@ namespace AzureOpsCLI.Services
             }
 
             try
-            {                
+            {
                 await CreateBlobContainerAsync(storageAccount.StorageAccountResource, containerName);
             }
             catch (RequestFailedException ex) when (ex.Status == 403)
@@ -147,9 +139,9 @@ namespace AzureOpsCLI.Services
 
             var backupContent = new ApiManagementServiceBackupRestoreContent(storageAccount.StorageAccountResource.Data.Name, containerName, $"{apim.APIManagementService.Data.Name} Backup {DateTime.Now:yyyy-MM-dd HH:mm}")
             {
-                AccessType = accessType               
+                AccessType = accessType
             };
-                        
+
             if (accessType == "UserAssignedManagedIdentity")
             {
                 backupContent.ClientId = identity.ClientId;
@@ -182,9 +174,9 @@ namespace AzureOpsCLI.Services
         }
 
         private async Task CreateBlobContainerAsync(StorageAccountResource storageAccountResource, string containerName)
-        {          
+        {
             BlobServiceResource blobService = storageAccountResource.GetBlobService();
-            BlobContainerCollection containerCollection = blobService.GetBlobContainers();          
+            BlobContainerCollection containerCollection = blobService.GetBlobContainers();
 
             if (!containerCollection.Exists(containerName).Value)
             {
@@ -200,7 +192,7 @@ namespace AzureOpsCLI.Services
 
             }
 
-        }      
+        }
 
     }
 }
