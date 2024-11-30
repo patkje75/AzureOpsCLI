@@ -379,14 +379,14 @@ class Program
                         "The API Managment resource needs a Managed Identity or a User Assigned identity with at least [yellow]Storage Blob Data Contributor[/] on the target storage account.\n" +
                         "The logged in user performig the backup must have at least [yellow]'Microsoft.ApiManagement/service/backup/action'[/] on the API Managment resource.\n\n" +
                         "[blue]INFO[/]\n" +
-                        "A blob container with the name [green]apim-backup[/] will be created under the storage account and the backup file will have the name [green]'<APIM Resource Name> Backup yyyy-MM-dd HH:mm'[/]");
+                        "A blob container with the name [green]apim-backup[/] will be created under the storage account and the backup file will have the name [green]'<APIM Resource Name> Backup yyyy-MM-dd HH:mm>'[/]\n\n\n");
                     backup.AddCommand<APIMBackupSubscriptionCommand>("subscription")
                         .WithDescription("Get all API Management Services in a specific subscriptions and backup the selected one to a storage account.\n\n" +
                         "[red]NOTE[/]\n" +
                         "The API Managment resource needs a Managed Identity or a User Assigned identity with at least [yellow]Storage Blob Data Contributor[/] on the target storage account.\n" +
                         "The logged in user performig the backup must have at least [yellow]'Microsoft.ApiManagement/service/backup/action'[/] on the API Managment resource.\n\n" +
                         "[blue]INFO[/]\n" +
-                        "A blob container with the name [green]apim-backup[/] will be created under the storage account and the backup file will have the name [green]'<APIM Resource Name> Backup yyyy-MM-dd HH:mm'[/]");
+                        "A blob container with the name [green]apim-backup[/] will be created under the storage account and the backup file will have the name [green]'<APIM Resource Name> Backup yyyy-MM-dd HH:mm>'[/]");
                 });
             });
 

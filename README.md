@@ -25,14 +25,14 @@ There are probably tons of typos, ambiguities or other oddities, you are welcome
 
 ## Features
 
+- API Management:  `apim` -> `list | backup`
 - Azure Container Instances: `aci` ->  `list | start | stop | restart | delete | getlogs`
-
 - Azure Compute Gallery: `imagegallery` -> `list `
 - Azure Compute Gallery Images: `imagegallery images` -> `list`
+- Management Group:  `mg` -> `show`
 - Virtual Machines:  `vm` -> `list | start | stop | restart | delete`
 - Virtual Machines Scale Sets: `vmss` -> `list | start | stop | restart | delete | changeimage | reimage | upgrade`
 - Virtual Machines Scale Sets Instance:  `vmss instance` -> `list | start | stop | restart | reimage | upgrade`
-
 
 ## Installation
 
@@ -80,6 +80,9 @@ This command will fetch all subscriptions and present in a list, then list all a
 
 ### List all Virtual Machines in all subscriptions and stop selected ones.
 ![vm stop all screenshot](./resources/gfx/vm_stop_all.gif)
+
+### Visualize Management Group Hierarchy.
+![mg show](./resources/gfx/mg_show.gif)
 
 ## Known Issues 
 - The console output of the `getlogs` command for Container Instances is messy and need some work.
