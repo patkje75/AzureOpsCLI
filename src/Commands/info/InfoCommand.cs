@@ -61,6 +61,13 @@ namespace AzureOpsCLI.Commands.Info
             vmssInstance.AddNode("[green]stop[/] [lightseagreen]all | subscription[/]");
             vmssInstance.AddNode("[green]upgrade[/] [lightseagreen]all | subscription[/]");
 
+            var mg = root.AddNode("[blue]mg[/]");
+            mg.AddNode("[green]show[/] ([purple4]--console / --exportmermaid[/])");
+
+            var apim = root.AddNode("[blue]apim[/]");
+            apim.AddNode("[green]list[/]  [lightseagreen]all | subscription[/]");
+            apim.AddNode("[green]backup[/]  [lightseagreen]all | subscription[/]");
+
             AnsiConsole.Write(root);
 
             return 0;

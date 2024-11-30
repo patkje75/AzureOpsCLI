@@ -1,5 +1,4 @@
 ﻿using AzureOpsCLI.Interfaces;
-using AzureOpsCLI.Services;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
