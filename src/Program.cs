@@ -3,6 +3,7 @@ using AzureOpsCLI.Commands.apim;
 using AzureOpsCLI.Commands.imagegallery;
 using AzureOpsCLI.Commands.Info;
 using AzureOpsCLI.Commands.mg;
+using AzureOpsCLI.Commands.rg;
 using AzureOpsCLI.Commands.vm;
 using AzureOpsCLI.Commands.vmss;
 using AzureOpsCLI.Commands.vmss.instance;
@@ -26,11 +27,51 @@ class Program
         services.AddSingleton<IMGService, MGService>();
         services.AddSingleton<IAPIManagementService, APIManagementService>();
         services.AddSingleton<IStorageService, StorageService>();
+        services.AddSingleton<IRGService, RGService>();
         var registrar = new TypeRegistrar(services);
         var app = new CommandApp(registrar);
 
         app.Configure(config =>
         {
+            config.AddBranch("rg", rg =>
+            {
+                //Description
+                rg.SetDescription("Resource group commands");
+                rg.AddBranch("list", list =>
+                {
+                    //Description
+                    list.SetDescription("List commands associated with resource groups");
+                    //Commands
+                    list.AddCommand<RGListAllCommand>("all")
+                        .WithDescription("Get all resource groups in all subscriptions.");
+                    list.AddCommand<RGListSubscriptionCommand>("subscription")
+                        .WithDescription("Get all resource groups in a specific subscription.");
+                });
+                rg.AddBranch("create", create =>
+                {
+                    //Description
+                    create.SetDescription("Create commands associated with resource groups");
+                    //Commands
+                    create.AddCommand<RGCreateSubscriptionCommand>("subscription")
+                        .WithDescription("Create a resource group in a specific subscription.");
+                });
+                rg.AddBranch("show", show =>
+                {
+                    //Description
+                    show.SetDescription("Show commands associated with resource groups");
+                    //Commands
+                    show.AddCommand<RGShowSubscriptionCommand>("subscription")
+                        .WithDescription("Show details of a resource group in a specific subscription.");
+                });
+                rg.AddBranch("delete", delete =>
+                {
+                    //Description
+                    delete.SetDescription("Delete commands associated with resource groups");
+                    //Commands
+                    delete.AddCommand<RGDeleteSubscriptionCommand>("subscription")
+                        .WithDescription("Delete a resource group in a specific subscription.");
+                });
+            });
 
             config.AddBranch("vm", vm =>
             {
