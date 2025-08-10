@@ -19,14 +19,25 @@ namespace AzureOpsCLI.Services
             List<string> subscriptionChoices = new List<string>();
             try
             {
+                var tenantFilter = Environment.GetEnvironmentVariable("AZURE_TENANT_ID") ??
+                                    Environment.GetEnvironmentVariable("ARM_TENANT_ID");
+
                 await AnsiConsole.Status()
                     .StartAsync("Fetching subscriptions...", async ctx =>
                     {
                         await foreach (var subscription in _armClient.GetSubscriptions().GetAllAsync())
                         {
-                            subscriptionChoices.Add($"{subscription.Data.DisplayName} ({subscription.Data.SubscriptionId})");
+                            if (string.IsNullOrEmpty(tenantFilter) || subscription.Data.TenantId == tenantFilter)
+                            {
+                                subscriptionChoices.Add($"{subscription.Data.DisplayName} ({subscription.Data.SubscriptionId})");
+                            }
                         }
                     });
+
+                if (tenantFilter != null && !subscriptionChoices.Any())
+                {
+                    AnsiConsole.MarkupLine($"[yellow]No subscriptions found for tenant {tenantFilter}.[/]");
+                }
             }
             catch (Exception ex)
             {

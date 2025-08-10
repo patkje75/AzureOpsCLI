@@ -38,15 +38,21 @@ namespace AzureOpsCLI.Commands.mg
 
 
             var managementGroupStructure = await _mgService.FetchManagementGroupsAsync();
+            if (managementGroupStructure == null || !managementGroupStructure.Any())
+            {
+                AnsiConsole.MarkupLine("[red]No management groups were returned. Ensure you have access and that management groups are enabled for the tenant.[/]");
+                return -1;
+            }
+
             var rootTree = new Tree("[green]Management Groups[/]");
 
             var groupLookup = managementGroupStructure.ToDictionary(mg => mg.DisplayName, mg => mg);
 
-            var rootGroup = managementGroupStructure.FirstOrDefault(mg => mg.DisplayName == "Tenant Root Group");
+            var rootGroup = managementGroupStructure.FirstOrDefault(mg => mg.Parent == "None");
 
             if (rootGroup == null)
             {
-                AnsiConsole.MarkupLine("[red]Error[/]: Root management group (Tenant Root Group) not found.");
+                AnsiConsole.MarkupLine("[red]Error[/]: Root management group not found or you do not have permission to view it. Verify that the Management Groups feature is enabled and that you have at least Reader access to the root group.");
                 return -1;
             }
 
