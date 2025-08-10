@@ -30,6 +30,7 @@ There are probably tons of typos, ambiguities or other oddities, you are welcome
 - Azure Compute Gallery: `imagegallery` -> `list `
 - Azure Compute Gallery Images: `imagegallery images` -> `list`
 - Management Group:  `mg` -> `show`
+- Resource Groups: `rg` -> `list | create` (filter and export supported)
 - Virtual Machines:  `vm` -> `list | start | stop | restart | delete`
 - Virtual Machines Scale Sets: `vmss` -> `list | start | stop | restart | delete | changeimage | reimage | upgrade`
 - Virtual Machines Scale Sets Instance:  `vmss instance` -> `list | start | stop | restart | reimage | upgrade`
