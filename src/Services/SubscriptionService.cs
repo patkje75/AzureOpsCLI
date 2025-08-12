@@ -34,5 +34,26 @@ namespace AzureOpsCLI.Services
             }
             return subscriptionChoices;
         }
+
+        public async Task<List<Azure.ResourceManager.Resources.SubscriptionResource>> FetchAllSubscriptionsAsync()
+        {
+            var subscriptions = new List<Azure.ResourceManager.Resources.SubscriptionResource>();
+            try
+            {
+                await AnsiConsole.Status()
+                    .StartAsync("Fetching subscriptions...", async ctx =>
+                    {
+                        await foreach (var subscription in _armClient.GetSubscriptions().GetAllAsync())
+                        {
+                            subscriptions.Add(subscription);
+                        }
+                    });
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.MarkupLine($"[red]Error fetching subscriptions: {ex.Message}[/]");
+            }
+            return subscriptions;
+        }
     }
 }

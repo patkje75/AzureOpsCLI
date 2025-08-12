@@ -7,6 +7,7 @@ using AzureOpsCLI.Commands.rg;
 using AzureOpsCLI.Commands.vm;
 using AzureOpsCLI.Commands.vmss;
 using AzureOpsCLI.Commands.vmss.instance;
+using AzureOpsCLI.Commands.tags;
 using AzureOpsCLI.DependencyInjection;
 using AzureOpsCLI.Interfaces;
 using AzureOpsCLI.Services;
@@ -28,6 +29,7 @@ class Program
         services.AddSingleton<IAPIManagementService, APIManagementService>();
         services.AddSingleton<IStorageService, StorageService>();
         services.AddSingleton<IRGService, RGService>();
+        services.AddSingleton<ITagService, TagService>();
         var registrar = new TypeRegistrar(services);
         var app = new CommandApp(registrar);
 
@@ -412,6 +414,52 @@ class Program
                         "The logged in user performig the backup must have at least [yellow]'Microsoft.ApiManagement/service/backup/action'[/] on the API Managment resource.\n\n" +
                         "[blue]INFO[/]\n" +
                         "A blob container with the name [green]apim-backup[/] will be created under the storage account and the backup file will have the name [green]'<APIM Resource Name> Backup yyyy-MM-dd HH:mm>'[/]");
+                });
+            });
+
+            config.AddBranch("tags", tags =>
+            {
+                //Description
+                tags.SetDescription("Resource tagging commands");
+                tags.AddBranch("list", list =>
+                {
+                    //Description
+                    list.SetDescription("List commands for resource tags");
+                    //Commands
+                    list.AddCommand<TagListAllCommand>("all")
+                        .WithDescription("List all resources with their tags across all subscriptions.");
+                    list.AddCommand<TagListSubscriptionCommand>("subscription")
+                        .WithDescription("List all resources with their tags in a specific subscription.");
+                });
+                tags.AddBranch("apply", apply =>
+                {
+                    //Description
+                    apply.SetDescription("Apply tags to selected resources");
+                    //Commands
+                    apply.AddCommand<TagApplyAllCommand>("all")
+                        .WithDescription("Apply tags to selected resources across all subscriptions.");
+                    apply.AddCommand<TagApplySubscriptionCommand>("subscription")
+                        .WithDescription("Apply tags to selected resources in a specific subscription.");
+                });
+                tags.AddBranch("remove", remove =>
+                {
+                    //Description
+                    remove.SetDescription("Remove tags from selected resources");
+                    //Commands
+                    remove.AddCommand<TagRemoveAllCommand>("all")
+                        .WithDescription("Remove tags from selected resources across all subscriptions.");
+                    remove.AddCommand<TagRemoveSubscriptionCommand>("subscription")
+                        .WithDescription("Remove tags from selected resources in a specific subscription.");
+                });
+                tags.AddBranch("export", export =>
+                {
+                    //Description
+                    export.SetDescription("Export resource tag information");
+                    //Commands
+                    export.AddCommand<TagExportAllCommand>("all")
+                        .WithDescription("Export resource tag information from all subscriptions to JSON or CSV.");
+                    export.AddCommand<TagExportSubscriptionCommand>("subscription")
+                        .WithDescription("Export resource tag information from a specific subscription to JSON or CSV.");
                 });
             });
 

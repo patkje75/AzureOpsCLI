@@ -36,6 +36,16 @@ namespace AzureOpsCLI.Commands.Info
             var imageGalleryImages = imageGallery.AddNode("[blue]images[/]");
             imageGalleryImages.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
 
+            var rg = root.AddNode("[blue]rg[/]");
+            rg.AddNode("[green]create[/] [lightseagreen]subscription[/] ([purple4]--name --location[/])");
+            rg.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
+
+            var tags = root.AddNode("[blue]tags[/]");
+            tags.AddNode("[green]apply[/] [lightseagreen]all | subscription[/]");
+            tags.AddNode("[green]export[/] [lightseagreen]all | subscription[/]");
+            tags.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
+            tags.AddNode("[green]remove[/] [lightseagreen]all | subscription[/]");
+
             var vm = root.AddNode("[blue]vm[/] [lightseagreen]all | subscription[/]");
             vm.AddNode("[green]delete[/] [lightseagreen]all | subscription[/]");
             vm.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
