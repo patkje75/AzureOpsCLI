@@ -52,7 +52,7 @@ namespace AzureOpsCLI.Commands.vmss.instance
                             {
                                 if (t.Result.Success)
                                 {
-                                    task.Description = $"Reimage was [green]successfull[/]: {t.Result.Message}";
+                                    task.Description = $"Reimage was [green]successful[/]: {t.Result.Message}";
                                     task.Increment(100);
                                 }
                                 else

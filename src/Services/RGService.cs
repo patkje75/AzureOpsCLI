@@ -79,12 +79,19 @@ namespace AzureOpsCLI.Services
             return rgs;
         }
 
-        public async Task<bool> CreateResourceGroupAsync(string subscriptionId, string resourceGroupName, string location)
+        public async Task<bool> CreateResourceGroupAsync(string subscriptionId, string resourceGroupName, string location, Dictionary<string, string>? tags = null)
         {
             try
             {
                 SubscriptionResource subscription = await _armClient.GetSubscriptions().GetAsync(subscriptionId);
                 ResourceGroupData rgData = new ResourceGroupData(location);
+                if (tags != null)
+                {
+                    foreach (var tag in tags)
+                    {
+                        rgData.Tags.Add(tag.Key, tag.Value);
+                    }
+                }
                 await subscription.GetResourceGroups().CreateOrUpdateAsync(WaitUntil.Completed, resourceGroupName, rgData);
                 return true;
             }

@@ -1,8 +1,10 @@
-﻿using AzureOpsCLI.Interfaces;
+using AzureOpsCLI.Interfaces;
+using AzureOpsCLI.Settings;
+using AzureOpsCLI.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-public class VMListAllCommand : AsyncCommand
+public class VMListAllCommand : AsyncCommand<ListCommandSettings>
 {
     private readonly IVMService _computeService;
 
@@ -11,11 +13,17 @@ public class VMListAllCommand : AsyncCommand
         _computeService = computeService;
     }
 
-    public override async Task<int> ExecuteAsync(CommandContext context)
+    public override async Task<int> ExecuteAsync(CommandContext context, ListCommandSettings settings)
     {
         try
         {
             var vms = await _computeService.FetchAllVMAsync();
+
+            // Apply filter if specified
+            if (!string.IsNullOrEmpty(settings.Filter))
+            {
+                vms = vms.Where(vm => vm.VM.Data.Name.Contains(settings.Filter, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
 
             if (vms != null && vms.Any())
             {
@@ -82,6 +90,33 @@ public class VMListAllCommand : AsyncCommand
                 }
 
                 AnsiConsole.Write(grid);
+
+                // Export if requested
+                if (!string.IsNullOrEmpty(settings.ExportFormat))
+                {
+                    await ExportHelper.ExportDataAsync(
+                        vms,
+                        settings.ExportFormat,
+                        "virtual-machines-all",
+                        vm => new[] {
+                            vm.VM.Data.Name,
+                            vm.VM.Data.Location.ToString(),
+                            vm.SubscriptionName,
+                            vm.Status ?? "unknown",
+                            vm.VM.Data.StorageProfile?.ImageReference?.Sku ?? "N/A",
+                            vm.VM.Data.StorageProfile?.ImageReference?.Version ?? "N/A"
+                        },
+                        new[] { "Name", "Location", "Subscription", "Status", "ImageName", "Version" },
+                        vm => new {
+                            Name = vm.VM.Data.Name,
+                            Location = vm.VM.Data.Location.ToString(),
+                            Subscription = vm.SubscriptionName,
+                            Status = vm.Status ?? "unknown",
+                            ImageName = vm.VM.Data.StorageProfile?.ImageReference?.Sku ?? "N/A",
+                            Version = vm.VM.Data.StorageProfile?.ImageReference?.Version ?? "N/A"
+                        }
+                    );
+                }
             }
             else
             {
