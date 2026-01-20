@@ -69,3 +69,7 @@ packages
 
 # Windows
 Thumbs.db
+
+# Claude Code
+CLAUDE.md
+.claude/

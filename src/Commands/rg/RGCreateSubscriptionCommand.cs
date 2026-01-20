@@ -1,6 +1,7 @@
 using AzureOpsCLI.Interfaces;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.ComponentModel;
 
 namespace AzureOpsCLI.Commands.rg
 {
@@ -22,6 +23,10 @@ namespace AzureOpsCLI.Commands.rg
 
             [CommandOption("-l|--location <LOCATION>")]
             public string? Location { get; set; }
+
+            [CommandOption("-t|--tags <TAGS>")]
+            [Description("Tags to apply (format: key=value;key=value)")]
+            public string? Tags { get; set; }
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
@@ -30,6 +35,17 @@ namespace AzureOpsCLI.Commands.rg
             {
                 AnsiConsole.MarkupLine("[red]You must specify --name and --location.[/]");
                 return 1;
+            }
+
+            // Parse tags if provided
+            Dictionary<string, string>? tagDict = null;
+            if (!string.IsNullOrEmpty(settings.Tags))
+            {
+                tagDict = settings.Tags
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(t => t.Split('=', 2))
+                    .Where(parts => parts.Length == 2)
+                    .ToDictionary(parts => parts[0].Trim(), parts => parts[1].Trim());
             }
 
             var subscriptionChoices = await _subscriptionService.FetchSubscriptionsAsync();
@@ -41,10 +57,14 @@ namespace AzureOpsCLI.Commands.rg
                     .AddChoices(subscriptionChoices));
 
             string subscriptionId = selectedSubscription.Split('(').Last().TrimEnd(')');
-            var result = await _rgService.CreateResourceGroupAsync(subscriptionId, settings.Name, settings.Location);
+            var result = await _rgService.CreateResourceGroupAsync(subscriptionId, settings.Name, settings.Location, tagDict);
             if (result)
             {
                 AnsiConsole.MarkupLine($"[green]Resource group {settings.Name} created in {settings.Location}.[/]");
+                if (tagDict != null && tagDict.Count > 0)
+                {
+                    AnsiConsole.MarkupLine($"[green]Applied {tagDict.Count} tag(s).[/]");
+                }
                 return 0;
             }
             else

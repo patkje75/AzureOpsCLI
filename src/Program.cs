@@ -1,7 +1,10 @@
 ﻿using AzureOpsCLI.Commands.aci;
 using AzureOpsCLI.Commands.apim;
+using AzureOpsCLI.Commands.disk;
 using AzureOpsCLI.Commands.imagegallery;
 using AzureOpsCLI.Commands.Info;
+using AzureOpsCLI.Commands.resourcelock;
+using AzureOpsCLI.Commands.metrics;
 using AzureOpsCLI.Commands.mg;
 using AzureOpsCLI.Commands.rg;
 using AzureOpsCLI.Commands.vm;
@@ -30,6 +33,9 @@ class Program
         services.AddSingleton<IStorageService, StorageService>();
         services.AddSingleton<IRGService, RGService>();
         services.AddSingleton<ITagService, TagService>();
+        services.AddSingleton<IMetricsService, MetricsService>();
+        services.AddSingleton<IDiskService, DiskService>();
+        services.AddSingleton<ILockService, LockService>();
         var registrar = new TypeRegistrar(services);
         var app = new CommandApp(registrar);
 
@@ -131,7 +137,7 @@ class Program
                     //Commands
                     list.AddCommand<VMSSListAllCommand>("all")
                         .WithDescription("Get all virtual machine scale sets in all subscriptions.");
-                    list.AddCommand<VMSSListScriptionCommand>("subscription")
+                    list.AddCommand<VMSSListSubscriptionCommand>("subscription")
                         .WithDescription("Get all virtual machine scale sets in a specific subscriptions.");
                 });
                 vmss.AddBranch("start", start =>
@@ -220,7 +226,7 @@ class Program
                         //Commands
                         list.AddCommand<VMSSInstanceListAllCommand>("all")
                             .WithDescription("Get all virtual machine scale set instances in all subscriptions.");
-                        list.AddCommand<VMSSInstanceListScriptionCommand>("subscription")
+                        list.AddCommand<VMSSInstanceListSubscriptionCommand>("subscription")
                         .WithDescription("Get all virtual machine scale set instances in a specific subscriptions.");
 
                     });
@@ -384,7 +390,7 @@ class Program
             config.AddBranch("apim", apim =>
             {
                 //Description
-                apim.SetDescription("API Mangagenment Service commands");
+                apim.SetDescription("API Management Service commands");
                 apim.AddBranch("list", list =>
                 {
                     //Description
@@ -460,6 +466,85 @@ class Program
                         .WithDescription("Export resource tag information from all subscriptions to JSON or CSV.");
                     export.AddCommand<TagExportSubscriptionCommand>("subscription")
                         .WithDescription("Export resource tag information from a specific subscription to JSON or CSV.");
+                });
+            });
+
+            config.AddBranch("metrics", metrics =>
+            {
+                metrics.SetDescription("Azure Monitor metrics commands");
+                metrics.AddBranch("vm", vm =>
+                {
+                    vm.SetDescription("VM metrics commands");
+                    vm.AddCommand<MetricsVMAllCommand>("all")
+                        .WithDescription("Show CPU/memory metrics for VMs across all subscriptions.");
+                    vm.AddCommand<MetricsVMSubscriptionCommand>("subscription")
+                        .WithDescription("Show CPU/memory metrics for VMs in a specific subscription.");
+                });
+            });
+
+            config.AddBranch("disk", disk =>
+            {
+                disk.SetDescription("Managed disk commands");
+                disk.AddBranch("list", list =>
+                {
+                    list.SetDescription("List managed disks");
+                    list.AddCommand<DiskListAllCommand>("all")
+                        .WithDescription("List all managed disks across all subscriptions.");
+                    list.AddCommand<DiskListSubscriptionCommand>("subscription")
+                        .WithDescription("List all managed disks in a specific subscription.");
+                });
+                disk.AddBranch("list-unattached", listUnattached =>
+                {
+                    listUnattached.SetDescription("List only unattached managed disks");
+                    listUnattached.AddCommand<DiskListUnattachedAllCommand>("all")
+                        .WithDescription("List unattached managed disks across all subscriptions.");
+                    listUnattached.AddCommand<DiskListUnattachedSubscriptionCommand>("subscription")
+                        .WithDescription("List unattached managed disks in a specific subscription.");
+                });
+                disk.AddBranch("snapshot", snapshot =>
+                {
+                    snapshot.SetDescription("Create disk snapshots");
+                    snapshot.AddCommand<DiskSnapshotAllCommand>("all")
+                        .WithDescription("Create snapshots of selected disks across all subscriptions.");
+                    snapshot.AddCommand<DiskSnapshotSubscriptionCommand>("subscription")
+                        .WithDescription("Create snapshots of selected disks in a specific subscription.");
+                });
+                disk.AddBranch("delete", delete =>
+                {
+                    delete.SetDescription("Delete unattached/orphaned disks");
+                    delete.AddCommand<DiskDeleteAllCommand>("all")
+                        .WithDescription("Delete selected unattached disks across all subscriptions.");
+                    delete.AddCommand<DiskDeleteSubscriptionCommand>("subscription")
+                        .WithDescription("Delete selected unattached disks in a specific subscription.");
+                });
+            });
+
+            config.AddBranch("lock", lockBranch =>
+            {
+                lockBranch.SetDescription("Resource lock commands for governance");
+                lockBranch.AddBranch("list", list =>
+                {
+                    list.SetDescription("List resource locks");
+                    list.AddCommand<LockListAllCommand>("all")
+                        .WithDescription("List all resource locks across all subscriptions.");
+                    list.AddCommand<LockListSubscriptionCommand>("subscription")
+                        .WithDescription("List all resource locks in a specific subscription.");
+                });
+                lockBranch.AddBranch("apply", apply =>
+                {
+                    apply.SetDescription("Apply locks to resources");
+                    apply.AddCommand<LockApplyAllCommand>("all")
+                        .WithDescription("Apply CanNotDelete or ReadOnly lock to selected resources across all subscriptions.");
+                    apply.AddCommand<LockApplySubscriptionCommand>("subscription")
+                        .WithDescription("Apply CanNotDelete or ReadOnly lock to selected resources in a specific subscription.");
+                });
+                lockBranch.AddBranch("remove", remove =>
+                {
+                    remove.SetDescription("Remove locks from resources");
+                    remove.AddCommand<LockRemoveAllCommand>("all")
+                        .WithDescription("Remove locks from selected resources across all subscriptions.");
+                    remove.AddCommand<LockRemoveSubscriptionCommand>("subscription")
+                        .WithDescription("Remove locks from selected resources in a specific subscription.");
                 });
             });
 

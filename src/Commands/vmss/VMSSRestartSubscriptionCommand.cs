@@ -64,7 +64,7 @@ namespace AzureOpsCLI.Commands.vmss
                             {
                                 if (t.Result.Success)
                                 {
-                                    task.Description = $"Restart was [green]successfull[/]: {t.Result.Message}";
+                                    task.Description = $"Restart was [green]successful[/]: {t.Result.Message}";
                                     task.Increment(100);
                                 }
                                 else

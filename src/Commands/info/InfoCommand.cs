@@ -36,9 +36,25 @@ namespace AzureOpsCLI.Commands.Info
             var imageGalleryImages = imageGallery.AddNode("[blue]images[/]");
             imageGalleryImages.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
 
+            var disk = root.AddNode("[blue]disk[/]");
+            disk.AddNode("[green]delete[/] [lightseagreen]all | subscription[/]");
+            disk.AddNode("[green]list[/] [lightseagreen]all | subscription[/] ([purple4]--filter --export[/])");
+            disk.AddNode("[green]list-unattached[/] [lightseagreen]all | subscription[/] ([purple4]--filter --export[/])");
+            disk.AddNode("[green]snapshot[/] [lightseagreen]all | subscription[/]");
+
+            var lockCmd = root.AddNode("[blue]lock[/]");
+            lockCmd.AddNode("[green]apply[/] [lightseagreen]all | subscription[/]");
+            lockCmd.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
+            lockCmd.AddNode("[green]remove[/] [lightseagreen]all | subscription[/]");
+
+            var metrics = root.AddNode("[blue]metrics[/]");
+            var metricsVm = metrics.AddNode("[blue]vm[/]");
+            metricsVm.AddNode("[green]all[/]");
+            metricsVm.AddNode("[green]subscription[/]");
+
             var rg = root.AddNode("[blue]rg[/]");
-            rg.AddNode("[green]create[/] [lightseagreen]subscription[/] ([purple4]--name --location[/])");
-            rg.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
+            rg.AddNode("[green]create[/] [lightseagreen]subscription[/] ([purple4]--name --location --tags[/])");
+            rg.AddNode("[green]list[/] [lightseagreen]all | subscription[/] ([purple4]--filter --export[/])");
 
             var tags = root.AddNode("[blue]tags[/]");
             tags.AddNode("[green]apply[/] [lightseagreen]all | subscription[/]");
@@ -46,9 +62,9 @@ namespace AzureOpsCLI.Commands.Info
             tags.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
             tags.AddNode("[green]remove[/] [lightseagreen]all | subscription[/]");
 
-            var vm = root.AddNode("[blue]vm[/] [lightseagreen]all | subscription[/]");
+            var vm = root.AddNode("[blue]vm[/]");
             vm.AddNode("[green]delete[/] [lightseagreen]all | subscription[/]");
-            vm.AddNode("[green]list[/] [lightseagreen]all | subscription[/]");
+            vm.AddNode("[green]list[/] [lightseagreen]all | subscription[/] ([purple4]--filter --export[/])");
             vm.AddNode("[green]restart[/] [lightseagreen]all | subscription[/]");
             vm.AddNode("[green]start[/] [lightseagreen]all | subscription[/]");
             vm.AddNode("[green]stop[/] [lightseagreen]all | subscription[/]");

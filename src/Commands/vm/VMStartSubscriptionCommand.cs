@@ -65,7 +65,7 @@ namespace AzureOpsCLI.Commands.vm
                             {
                                 if (t.Result.Success)
                                 {
-                                    task.Description = $"Start was [green]successfull[/]: {t.Result.Message}";
+                                    task.Description = $"Start was [green]successful[/]: {t.Result.Message}";
                                     task.Increment(100);
                                 }
                                 else

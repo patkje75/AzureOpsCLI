@@ -83,7 +83,7 @@ public class VMSSDeleteSubscriptionCommand : AsyncCommand
                             {
                                 if (t.Result.Success)
                                 {
-                                    task.Description = $"Delete was [green]successfull[/]: {t.Result.Message}";
+                                    task.Description = $"Delete was [green]successful[/]: {t.Result.Message}";
                                     task.Increment(100);
                                 }
                                 else

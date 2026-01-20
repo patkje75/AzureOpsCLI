@@ -9,8 +9,8 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Title>Azure Ops CLI</Title>
     <PackageProjectUrl>https://github.com/patkje75/AzureOpsCLI</PackageProjectUrl>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.12.0" />

@@ -58,7 +58,7 @@ namespace AzureOpsCLI.Commands.vmss.instance
                             {
                                 if (t.Result.Success)
                                 {
-                                    task.Description = $"Stop was [green]successfull[/]: {t.Result.Message}";
+                                    task.Description = $"Stop was [green]successful[/]: {t.Result.Message}";
                                     task.Increment(100);
                                 }
                                 else

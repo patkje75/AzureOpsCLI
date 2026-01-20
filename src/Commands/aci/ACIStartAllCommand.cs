@@ -28,7 +28,7 @@ namespace AzureOpsCLI.Commands.aci
 
             var selectedACIs = AnsiConsole.Prompt(
                 new MultiSelectionPrompt<string>()
-                    .Title("Select contaioner instance to start:")
+                    .Title("Select container instance to start:")
                     .NotRequired()
                     .PageSize(10)
                     .MoreChoicesText("[grey](Move up and down to reveal more container instances)[/]")
@@ -53,7 +53,7 @@ namespace AzureOpsCLI.Commands.aci
                             {
                                 if (t.Result.Success)
                                 {
-                                    task.Description = $"Start was [green]successfull[/]: {t.Result.Message}";
+                                    task.Description = $"Start was [green]successful[/]: {t.Result.Message}";
                                     task.Increment(100);
                                 }
                                 else

@@ -1,11 +1,13 @@
-﻿using AzureOpsCLI.Interfaces;
+using AzureOpsCLI.Interfaces;
+using AzureOpsCLI.Settings;
+using AzureOpsCLI.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace AzureOpsCLI.Commands.vm
 {
 
-    public class VMListSubscriptionCommand : AsyncCommand
+    public class VMListSubscriptionCommand : AsyncCommand<ListCommandSettings>
     {
         private readonly IVMService _computeService;
         private readonly ISubscritionService _subscriptionService;
@@ -16,7 +18,7 @@ namespace AzureOpsCLI.Commands.vm
             _subscriptionService = subscriptionService;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context)
+        public override async Task<int> ExecuteAsync(CommandContext context, ListCommandSettings settings)
         {
             try
             {
@@ -38,6 +40,13 @@ namespace AzureOpsCLI.Commands.vm
                 string subscriptionName = selectedSubscription.Split('(').Last().TrimEnd(')');
 
                 var vms = await _computeService.FetchVMInSubscriptionAsync(subscriptionName);
+
+                // Apply filter if specified
+                if (!string.IsNullOrEmpty(settings.Filter))
+                {
+                    vms = vms.Where(vm => vm.VM.Data.Name.Contains(settings.Filter, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+
                 if (vms != null && vms.Any())
                 {
                     var grid = new Grid();
@@ -101,6 +110,33 @@ namespace AzureOpsCLI.Commands.vm
                     }
 
                     AnsiConsole.Write(grid);
+
+                    // Export if requested
+                    if (!string.IsNullOrEmpty(settings.ExportFormat))
+                    {
+                        await ExportHelper.ExportDataAsync(
+                            vms,
+                            settings.ExportFormat,
+                            "virtual-machines-subscription",
+                            vm => new[] {
+                                vm.VM.Data.Name,
+                                vm.VM.Data.Location.ToString(),
+                                vm.SubscriptionName,
+                                vm.Status ?? "unknown",
+                                vm.VM.Data.StorageProfile?.ImageReference?.Sku ?? "N/A",
+                                vm.VM.Data.StorageProfile?.ImageReference?.Version ?? "N/A"
+                            },
+                            new[] { "Name", "Location", "Subscription", "Status", "ImageName", "Version" },
+                            vm => new {
+                                Name = vm.VM.Data.Name,
+                                Location = vm.VM.Data.Location.ToString(),
+                                Subscription = vm.SubscriptionName,
+                                Status = vm.Status ?? "unknown",
+                                ImageName = vm.VM.Data.StorageProfile?.ImageReference?.Sku ?? "N/A",
+                                Version = vm.VM.Data.StorageProfile?.ImageReference?.Version ?? "N/A"
+                            }
+                        );
+                    }
                 }
                 else
                 {

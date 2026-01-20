@@ -65,7 +65,7 @@ public class VMSSUpgradeSubscriptionCommand : AsyncCommand
                             {
                                 if (t.Result.Success)
                                 {
-                                    task.Description = $"Upgrade was [green]successfull[/]: {t.Result.Message}";
+                                    task.Description = $"Upgrade was [green]successful[/]: {t.Result.Message}";
                                     task.Increment(100);
                                 }
                                 else

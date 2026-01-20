@@ -2,16 +2,16 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace AzureOpsCLI.Commands.vmss.instance
+namespace AzureOpsCLI.Commands.vmss
 {
-    public class VMSSInstanceListScriptionCommand : AsyncCommand
+    public class VMSSListSubscriptionCommand : AsyncCommand
     {
-        private readonly IVMSSVMService _vmssvmService;
+        private readonly IVMSSService _vmssService;
         private readonly ISubscritionService _subscriptionService;
 
-        public VMSSInstanceListScriptionCommand(IVMSSVMService vmssvmService, ISubscritionService subscritionService)
+        public VMSSListSubscriptionCommand(IVMSSService vmssService, ISubscritionService subscritionService)
         {
-            _vmssvmService = vmssvmService;
+            _vmssService = vmssService;
             _subscriptionService = subscritionService;
         }
 
@@ -30,36 +30,34 @@ namespace AzureOpsCLI.Commands.vmss.instance
 
             try
             {
-                var vmscalesets = await _vmssvmService.FetchVMSSInstancesInSubscriptionAsync(subscriptionId);
+                var vmscalesets = await _vmssService.FetchVMSSInSubscriptionAsync(subscriptionId);
                 if (vmscalesets.Count > 0)
                 {
                     var grid = new Grid();
-                    grid.AddColumn(new GridColumn().Width(30));
-                    grid.AddColumn(new GridColumn().Width(30));
-                    grid.AddColumn(new GridColumn().Width(15));
+
                     grid.AddColumn(new GridColumn().Width(30));
                     grid.AddColumn(new GridColumn().Width(15));
+                    grid.AddColumn(new GridColumn().Width(30));
                     grid.AddColumn(new GridColumn().Width(10));
+                    grid.AddColumn(new GridColumn().Width(20));
                     grid.AddColumn(new GridColumn().Width(30));
                     grid.AddColumn(new GridColumn().Width(25));
                     grid.AddColumn(new GridColumn().Width(17));
 
                     grid.AddRow(
-                        "[bold darkgreen]Instance Name[/]",
-                        "[bold darkgreen]Scale Set[/]",
+                        "[bold darkgreen]Name[/]",
                         "[bold darkgreen]Location[/]",
-                        "[bold darkgreen]Subscription[/]",
-                        "[bold darkgreen]Latest Model[/]",
+                        "[bold darkgreen]Subscription Name[/]",
                         "[bold darkgreen]Status[/]",
+                        "[bold darkgreen]Instances[/]",
                         "[bold darkgreen]Image Name[/]",
-                        "[bold darkgreen]Image Version[/]",
+                        "[bold darkgreen]Version[/]",
                         "[bold darkgreen]Marketplace Image[/]"
-                    );
+                        );
 
-                    foreach (var vmssvms in vmscalesets)
+                    foreach (var vmss in vmscalesets)
                     {
-
-                        var imageReference = vmssvms.VMSS.Data.VirtualMachineProfile?.StorageProfile?.ImageReference;
+                        var imageReference = vmss.VMSS.Data.VirtualMachineProfile?.StorageProfile?.ImageReference;
                         string imageReferenceId = imageReference?.Id;
                         string imageName = "No image name found";
                         string imageVersion = "No version specified";
@@ -77,6 +75,7 @@ namespace AzureOpsCLI.Commands.vmss.instance
                             {
                                 imageName = parts[10];
                             }
+
                         }
                         else
                         {
@@ -85,17 +84,15 @@ namespace AzureOpsCLI.Commands.vmss.instance
                             marketplace = true;
                         }
 
-                        var latestModelColor = vmssvms.VMSSVm.Data.LatestModelApplied == true ? "green" : "red";
-                        var statusColor = vmssvms.Status == "running" ? "green" : "red";
+                        var statusColor = vmss.Status != "running" ? "red" : "green";
                         var marketplaceColor = marketplace != true ? "red" : "green";
 
                         grid.AddRow(
-                            $"[blue]{vmssvms.VMSSVm.Data.Name}[/]",
-                            $"[yellow]{vmssvms.VMSS.Data.Name}[/]",
-                            $"[yellow]{vmssvms.VMSSVm.Data.Location}[/]",
-                            $"[yellow]{vmssvms.SubscriptionName}[/]",
-                            $"[{latestModelColor}]{vmssvms.VMSSVm.Data.LatestModelApplied}[/]",
-                            $"[{statusColor}]{vmssvms.Status}[/]",
+                            $"[blue]{vmss.VMSS.Data.Name}[/]",
+                            $"[yellow]{vmss.VMSS.Data.Location}[/]",
+                            $"[yellow]{vmss.SubscriptionName}[/]",
+                            $"[{statusColor}]{vmss.Status}[/]",
+                            $"[yellow]{vmss.numberOfInstances}[/]",
                             $"[yellow]{imageName}[/]",
                             $"[yellow]{imageVersion}[/]",
                             $"[{marketplaceColor}]{marketplace}[/]"
@@ -106,7 +103,7 @@ namespace AzureOpsCLI.Commands.vmss.instance
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[red]No virtual machine scale set instances found.[/]");
+                    AnsiConsole.MarkupLine("[red]No virtual machine scale sets found.[/]");
                 }
             }
             catch (Exception ex)

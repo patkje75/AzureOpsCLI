@@ -9,8 +9,8 @@ This is a hobby project and is maintained to the best of my ability, I am not a 
 The ambition with this project is to code for fun, but also to create something useful. :computer:  
 More functionality and improvements will be added over time.  
 
-At this point, this tool may not be the best option if you have a large number of subscriptions or resources, as the lists can become very long.  
-There are plans to add better filtering options, but we'll see if and when that happens.
+At this point, this tool may not be the best option if you have a large number of subscriptions or resources, as the lists can become very long.
+Many list commands now support `--filter` and `--export` options to help manage large result sets.
 
 There are probably tons of typos, ambiguities or other oddities, you are welcome to provide feedback so I can address them, thank you! :star:
 
@@ -27,13 +27,18 @@ There are probably tons of typos, ambiguities or other oddities, you are welcome
 
 - API Management:  `apim` -> `list | backup`
 - Azure Container Instances: `aci` ->  `list | start | stop | restart | delete | getlogs`
-- Azure Compute Gallery: `imagegallery` -> `list `
+- Azure Compute Gallery: `imagegallery` -> `list`
 - Azure Compute Gallery Images: `imagegallery images` -> `list`
+- Managed Disks: `disk` -> `list | list-unattached | snapshot | delete` (with filter and export support)
 - Management Group:  `mg` -> `show`
-- Resource Groups: `rg` -> `list | create` (filter and export supported)
-- Virtual Machines:  `vm` -> `list | start | stop | restart | delete`
+- Metrics: `metrics vm` -> `all | subscription` (CPU, memory, disk, network metrics)
+- Resource Groups: `rg` -> `list | create` (with filter, export, and --tags support)
+- Resource Locks: `lock` -> `list | apply | remove` (CanNotDelete or ReadOnly locks)
+- Resource Tags: `tags` -> `list | apply | remove | export`
+- Virtual Machines:  `vm` -> `list | start | stop | restart | delete` (with filter and export support)
 - Virtual Machines Scale Sets: `vmss` -> `list | start | stop | restart | delete | changeimage | reimage | upgrade`
 - Virtual Machines Scale Sets Instance:  `vmss instance` -> `list | start | stop | restart | reimage | upgrade`
+- Info: `info` -> Display information about the tool
 
 ## Installation
 
@@ -71,6 +76,51 @@ This command will fetch all subscriptions available and then list all accessible
 
 This command will fetch all subscriptions and present in a list, then list all accessible virtual machine scale sets from the selected subscription.
 
+### List VMs with filter and export to CSV
+>azo vm list all --filter prod --export csv
+
+This command will list all VMs containing "prod" in their name and export the results to a CSV file.
+
+### Show VM metrics across all subscriptions
+>azo metrics vm all
+
+This command will display CPU, memory, disk, and network metrics for all VMs across all subscriptions.
+
+### List all managed disks
+>azo disk list all
+
+This command will list all managed disks with their size, type, and attachment status.
+
+### List only unattached disks
+>azo disk list-unattached all
+
+This command will list only unattached (orphaned) managed disks across all subscriptions.
+
+### Create snapshots of selected disks
+>azo disk snapshot subscription
+
+This command will let you select disks from a subscription and create snapshots of them.
+
+### List resource locks
+>azo lock list all
+
+This command will list all resource locks (CanNotDelete or ReadOnly) across all subscriptions.
+
+### Apply a lock to resource groups
+>azo lock apply subscription
+
+This command will let you select resource groups and apply a CanNotDelete or ReadOnly lock to prevent accidental deletion.
+
+### Create a resource group with tags
+>azo rg create subscription --name my-rg --location westeurope --tags "env=prod;team=devops"
+
+This command will create a resource group with the specified tags applied.
+
+### Show tool information
+>azo info
+
+This command displays information about the Azure Ops CLI tool.
+
 ## Screenshots
 
 ### List all Virtual Machine Scale Sets in all subscriptions
@@ -85,6 +135,6 @@ This command will fetch all subscriptions and present in a list, then list all a
 ### Visualize Management Group Hierarchy.
 ![mg show](./resources/gfx/mg_show.gif)
 
-## Known Issues 
-- The console output of the `getlogs` command for Container Instances is messy and need some work.
-- Status messages can be messy when the resource names are of different lenght, might be some fix in Spectre Console, need some investigation.
+## Known Issues
+- The console output of the `getlogs` command for Container Instances is messy and needs some work.
+- Status messages can be messy when the resource names are of different length, might be some fix in Spectre Console, needs some investigation.

@@ -6,6 +6,6 @@ namespace AzureOpsCLI.Interfaces
     {
         Task<List<ResourceGroupExtended>> FetchAllResourceGroupsAsync(string? filter = null);
         Task<List<ResourceGroupExtended>> FetchResourceGroupsBySubscriptionAsync(string subscriptionId, string? filter = null);
-        Task<bool> CreateResourceGroupAsync(string subscriptionId, string resourceGroupName, string location);
+        Task<bool> CreateResourceGroupAsync(string subscriptionId, string resourceGroupName, string location, Dictionary<string, string>? tags = null);
     }
 }
